@@ -2,8 +2,6 @@
 
 ## What's in this repository?
 
-__We will add the code very soon!__
-
 We implemented a linear regression model classifier that uses age, sex, and the root mean square of the ECG lead signals as features. This simple example illustrates how to format your MATLAB entry for the Challenge. However, it is **not** designed to score well (or, more accurately, designed not to do well), so you should not use it as a baseline for your model's performance.
 
 The Matlab code contains two main sections: 
