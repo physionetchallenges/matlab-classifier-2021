@@ -21,14 +21,14 @@ After training your model and obtaining test outputs using the above two command
 
      evaluate_model(labels, outputs, scores.csv, class_scores.csv)
 
-where `labels` is a directory containing files with one or more labels for each ECG recording, such as the training database on the PhysioNet webpage; `outputs` is a directory containing files with outputs produced by your algorithm for those recordings; `scores.csv` (optional) is a collection of scores for your algorithm; and `class_scores.csv` (optional) is a collection of per-class scores for your algorithm.
+where `labels` is a directory containing files with one or more labels for each ECG recording, such as the training data files on the PhysioNet webpage; `outputs` is a directory containing files with outputs produced by your algorithm for those recordings; `scores.csv` (optional) is a collection of scores for your algorithm; and `class_scores.csv` (optional) is a collection of per-class scores for your algorithm.
 
 ## Which scripts I can edit?
 
 We will run the `train_model.m` and `test_model.m` scripts to run your training code and testing code, so check these scripts and the functions that they call.
 Our example code uses four main scripts to train and test your model for the 2021 Challenge: 
 
-Please edit the following script to add your training and testing code:
+Please edit the following scripts to add your training and testing code:
 * `team_training_code.m` is a script with functions for training your model and running your trained model.
 * `team_testing_code.m` is a script with functions for loading your model, extrating features from your test data and predict outputs using the classifier.
 
@@ -40,7 +40,7 @@ These four scripts must remain in the root path of your repository, but you can 
 
 ## How do I train, save, load, and run my model?
 
-To train and save your model, please edit the `get_features` function in the `team_code.m` script. `get_features` is a script with functions for extracting the leads of the data, `get_leads`, preprocessing the signals and extracting features from ECG leads. 
+To train and save your model, please edit the `get_features` function in the `team_code.m` script. `get_features` is a script with functions for extracting the available leads of the data (`get_leads`), preprocessing the signals and extracting features from ECG leads. 
 
 To load and run your trained model, please edit the `team_testing_code`, which takes an ECG recording as an input and returns the class labels and probabilities for the ECG recording as outputs. Please do not edit the input or output arguments of the functions for loading or running your models.
 
