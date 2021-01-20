@@ -12,7 +12,7 @@ function  model = team_training_code(input_directory,output_directory) % train_E
 %
 % Author: Erick Andres Perez Alday, PhD, <perezald@ohsu.edu>
 % Version 1.0 Aug-2020
-% Revision History
+% Edit History
 % By: Nadi Sadr, PhD, <nadi.sadr@dbmi.emory.edu>
 % Version 2.0  1-Dec-2020
 % Version 2.1 23-Dec-2020
@@ -102,13 +102,6 @@ Features_leads = features(:,[Used_leads_idx(:)',1+Used_leads_idx(end),2+Used_lea
 model = mnrfit(Features_leads,label,'model','hierarchical');
 save_ECG2leads_model(model,output_directory,classes);
 
-end
-
-function save_ECGleads_features(features,output_directory) %save_ECG_model
-% Save results.
-tmp_file = 'features.mat';
-filename=fullfile(output_directory,tmp_file);
-save(filename,'features');
 end
 
 function save_ECG12leads_model(model,output_directory,classes) %save_ECG_model
@@ -201,3 +194,10 @@ catch ex
 end
 
 end
+
+% function save_ECGleads_features(features,output_directory) %save_ECG_model
+% % Save results.
+% tmp_file = 'features.mat';
+% filename=fullfile(output_directory,tmp_file);
+% save(filename,'features');
+% end
