@@ -4,18 +4,17 @@ function test_model(model_directory,input_directory, output_directory)
 % Test model and obtain test outputs
 % *** Do not edit this script.
 % Inputs:
-% 1. Header files including the number of leads (header_data)
+% 1. model_directory: the directory containing the models
+% 2. input_directory: the directory containing test data and header files
+% 3. output_directory: a directory to save the test output in
 %
 % Outputs:
-% number of leads
-% used lead names
-% used leads index in header and data
-% Unused leads names and index
+% output csv file: the recording name, class and output scores and labels
 %
 % Author: Nadi Sadr, PhD, <nadi.sadr@dbmi.emory.edu>
 % Version 1.0
 % Date 9-Dec-2020
-% Version 1.1, 23-Dec-2020
+% Version 2.0 25-Jan-2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Find files.
@@ -38,21 +37,25 @@ end
 % Do **not** change the arguments of this function.
 disp('Loading 12 leads ECG model...')
 model12 = load_ECG_12leads_model(model_directory);
-%     model = load_ECG_12leads_model(model_directory);
 
 % Load your trained 6-lead ECG model.
 % These functions are **required**.
 % Do **not** change the arguments of this function.
 disp('Loading 6 leads ECG model...')
 model6 = load_ECG_6leads_model(model_directory);
-%     model = load_ECG_6leads_model(model_directory);
+
+% Load your trained 3-lead ECG model.
+% These functions are **required**.
+% Do **not** change the arguments of this function.
+disp('Loading 3 leads ECG model...')
+model3 = load_ECG_3leads_model(model_directory);
 
 % Load your trained 2-lead ECG model.
 % These functions are **required**.
 % Do **not** change the arguments of this function.
 disp('Loading 2 leads ECG model...')
 model2 = load_ECG_2leads_model(model_directory);
-%         model = load_ECG_2leads_model(model_directory);
+% model = load_ECG_2leads_model(model_directory);
 
 %% Predicting the outputs
 % Iterate over files.
@@ -66,21 +69,23 @@ for i = 1:num_files
     tmp_input_file = fullfile(input_directory, file_tmp{1});
     [data,header_data] = load_challenge_data(tmp_input_file);
 
-    %% Check the number of available ECG leads
-    [Used_leads, Used_leads_idx] = get_leads(header_data);
-
-    %% Extract features
-    tmp_features = get_features(data,header_data);
+    %% Check the available ECG leads
+    tmp_hea = strsplit(header_data{1},' ');
+    num_leads = str2num(tmp_hea{2});
+    [leads, leads_idx] = get_leads(header_data,num_leads);
 
     %% Apply model to recording.
-    if length(Used_leads)==12
     % 12 Leads model
+    if length(leads)==12
     [current_score,current_label,classes] = team_testing_code(data,header_data,model12);
-    elseif length(Used_leads)==6
     % 6 Leads model
+    elseif length(leads)==6
     [current_score,current_label,classes] = team_testing_code(data,header_data,model6);
-    elseif length(Used_leads)==2
+    % 3 Leads model
+    elseif length(leads)==3
+    [current_score,current_label,classes] = team_testing_code(data,header_data,model3);
     % 2 Leads model
+    elseif length(leads)==2
     [current_score,current_label,classes] = team_testing_code(data,header_data,model2);
     end
 
@@ -155,6 +160,18 @@ end
 % Do **not** change the arguments of this function.function model = load_ECG_6leads_model(model_directory)
 function model = load_ECG_6leads_model(model_directory)
 out_file='six_lead_ecg_model.mat';
+filename=fullfile(model_directory,out_file);
+A=load(filename);
+model=A;
+
+end
+
+%% Load your trained 3-lead ECG model.
+% This function is **required**.
+% Do **not** change the arguments of this function.
+function model = load_ECG_3leads_model(model_directory)
+
+out_file='three_lead_ecg_model.mat';
 filename=fullfile(model_directory,out_file);
 A=load(filename);
 model=A;
