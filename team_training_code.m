@@ -1,21 +1,21 @@
 function  model = team_training_code(input_directory,output_directory) % train_ECG_leads_classifier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Purpose: Train ECG leads and obtain classifier models
-% for 12-lead, 6-leads and 2-leads ECG sets
+% for 12-lead, 6-leads, 3-leads and 2-leads ECG sets
 % Inputs:
 % 1. input_directory
 % 2. output_directory
 %
 % Outputs:
 % model: trained model
-% 3 logistic regression models for 3 different sets of leads
+% 4 logistic regression models for 4 different sets of leads
 %
 % Author: Erick Andres Perez Alday, PhD, <perezald@ohsu.edu>
 % Version 1.0 Aug-2020
 % Revision History
 % By: Nadi Sadr, PhD, <nadi.sadr@dbmi.emory.edu>
-% Version 2.0  1-Dec-2020
-% Version 2.1 23-Dec-2020
+% Version 2.0 1-Dec-2020
+% Version 2.2 25-Jan-2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp('Loading data...')
@@ -61,16 +61,18 @@ for i = 1:num_files
     data = Total_data{i};
     header_data = Total_header{i};
     %% Check the number of available ECG leads
-    [Used_leads, Used_leads_idx] = get_leads(header_data);
+    tmp_hea = strsplit(header_data{1},' ');
+    num_leads = str2num(tmp_hea{2});
+    [leads, leads_idx] = get_leads(header_data,num_leads);
 
     %% Extract features
-    tmp_features = get_features(data,header_data,Used_leads);
+    tmp_features = get_features(data,header_data,leads_idx);
     features(i,:) = tmp_features(:);
     %% Extract labels
     for j = 1 : length(header_data)
         if startsWith(header_data{j},'#Dx')
             tmp = strsplit(header_data{j},': ');
-            % Take more than one label if avialable - Nadi Sadr 22-Dec-2020
+            % Extract more than one label if avialable
             tmp_c = strsplit(tmp{2},',');
             for k=1:length(tmp_c)
                 idx=find(strcmp(classes,tmp_c{k}));
@@ -83,32 +85,48 @@ for i = 1:num_files
 
 end
 
-%% train 3 logistic regression models for 3 different sets of leads
+%% train 4 logistic regression models for 4 different sets of leads
+
 % Train 12-lead ECG model
 disp('Training 12-lead ECG model...')
-Features_leads = features(:,[Used_leads_idx(:)',1+Used_leads_idx(end),2+Used_leads_idx(end)]);
+num_leads = 12;
+[leads, leads_idx] = get_leads(header_data,num_leads);
+% Features = [1:12] features from 12 ECG leads + Age + Sex
+Features_leads_idx = [leads_idx{:},13,14];
+Features_leads = features(:,Features_leads_idx);
 model = mnrfit(Features_leads,label,'model','hierarchical');
 save_ECG12leads_model(model,output_directory,classes);
 
 % Train 6-lead ECG model
 disp('Training 6-lead ECG model...')
-Features_leads = features(:,[Used_leads_idx(:)',1+Used_leads_idx(end),2+Used_leads_idx(end)]);
+num_leads = 6;
+[leads, leads_idx] = get_leads(header_data,num_leads);
+% Features = [1:6] features from 6 ECG leads + Age + Sex
+Features_leads_idx = [leads_idx{:},13,14];
+Features_leads = features(:,Features_leads_idx);
 model = mnrfit(Features_leads,label,'model','hierarchical');
 save_ECG6leads_model(model,output_directory,classes);
 
+% Train 3-lead ECG model
+disp('Training 3-lead ECG model...')
+num_leads = 3;
+[leads, leads_idx] = get_leads(header_data,num_leads);
+% Features = [1:3] features from 3 ECG leads + Age + Sex
+Features_leads_idx = [leads_idx{:},13,14];
+Features_leads = features(:,Features_leads_idx);
+model = mnrfit(Features_leads,label,'model','hierarchical');
+save_ECG3leads_model(model,output_directory,classes);
+
 % Train 2-lead ECG model
 disp('Training 2-lead ECG model...')
-Features_leads = features(:,[Used_leads_idx(:)',1+Used_leads_idx(end),2+Used_leads_idx(end)]);
+num_leads = 2;
+[leads, leads_idx] = get_leads(header_data,num_leads);
+% Features = [1:2] features from 2 ECG leads + Age + Sex
+Features_leads_idx = [leads_idx{:},13,14];
+Features_leads = features(:,Features_leads_idx);
 model = mnrfit(Features_leads,label,'model','hierarchical');
 save_ECG2leads_model(model,output_directory,classes);
 
-end
-
-function save_ECGleads_features(features,output_directory) %save_ECG_model
-% Save results.
-tmp_file = 'features.mat';
-filename=fullfile(output_directory,tmp_file);
-save(filename,'features');
 end
 
 function save_ECG12leads_model(model,output_directory,classes) %save_ECG_model
@@ -129,6 +147,15 @@ save(filename,'model','classes','-v7.3');
 disp('Done.')
 end
 
+function save_ECG3leads_model(model,output_directory,classes) %save_ECG_model
+% Save results.
+tmp_file = 'three_lead_ecg_model.mat';
+filename=fullfile(output_directory,tmp_file);
+save(filename,'model','classes','-v7.3');
+
+disp('Done.')
+end
+
 function save_ECG2leads_model(model,output_directory,classes) %save_ECG_model
 % Save results.
 tmp_file = 'two_lead_ecg_model.mat';
@@ -138,6 +165,12 @@ save(filename,'model','classes','-v7.3');
 disp('Done.')
 end
 
+function save_ECGleads_features(features,output_directory) %save_ECG_model
+% Save results.
+tmp_file = 'features.mat';
+filename=fullfile(output_directory,tmp_file);
+save(filename,'features');
+end
 
 % find unique number of classes
 function classes = get_classes(input_directory,files)
