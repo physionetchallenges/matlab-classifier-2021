@@ -28,21 +28,26 @@ where `labels` is a directory containing files with one or more labels for each 
 We will run the `train_model.m` and `test_model.m` scripts to run your training code and testing code, so check these scripts and the functions that they call.
 Our example code uses four main scripts to train and test your model for the 2021 Challenge: 
 
-Please edit the following script to add your training and testing code:
-* `team_training_code.m` is a script with functions for training your model and running your trained model.
-* `team_testing_code.m` is a script with functions for loading your model, extrating features from your test data and predict outputs using the classifier.
+Please edit the following scripts to add your training and testing code:
+* `team_training_code.m` is a script with functions for training your model and running your trained model. It also calls `get_features.m` fucntion that you can edit.
+* `team_testing_code.m` is a script with functions for loading your model, extracting features from your test data and predict outputs using the classifier.
 
 Please do **not** edit the following scripts. We will use the unedited versions of these scripts.
 * `train_model.m` is a script for calling your training code on the training data.
 * `test_model.m` is a script for calling your trained model on the test data.
 
-These four scripts must remain in the root path of your repository, but you can put other scripts and other files in subfolders.
+Please do **not** edit the following functions. We will use the unedited versions of these functions.
+* `get_leads.m` is a function for extracting the available leads (name and index).
+* `extract_data_from_header.m` is a function for extracting the data information from the header files.
+
+These scripts must remain in the root path of your repository, but you can put other scripts and other files in subfolders.
+
 
 ## How do I train, save, load, and run my model?
 
-To train and save your model, please edit the `get_features` function in the `team_code.m` script. `get_features` is a script with functions for extracting the leads of the data, `get_leads`, preprocessing the signals and extracting features from ECG leads. 
+To train and save your model, please edit the `team_training_code.m` script and the `get_features.m` function in the `team_training_code.m` script. `team_training_code.m` is a script for training your model and `get_features.m` is a function for preprocessing the signals and extracting features from ECG leads. Please do not edit the input or output arguments of `team_training_code.m` script.
 
-To load and run your trained model, please edit the `team_testing_code`, which takes an ECG recording as an input and returns the class labels and probabilities for the ECG recording as outputs. Please do not edit the input or output arguments of the functions for loading or running your models.
+To load and run your trained model, please edit the `team_testing_code.m`, which takes an ECG recording as an input and returns the class labels and probabilities for the ECG recording as outputs. Please do not edit the input or output arguments of `team_testing_code.m` script for loading or running your models.
 
 ## How to extract reduced leads sets from training data?
 
