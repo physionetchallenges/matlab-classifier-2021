@@ -29,7 +29,7 @@ We will run the `train_model.m` and `test_model.m` scripts to run your training 
 Our example code uses four main scripts to train and test your model for the 2021 Challenge: 
 
 Please edit the following script to add your training and testing code:
-* `team_training_code.m` is a script with functions for training your model and running your trained model.
+* `team_training_code.m` is a script with functions for training your model and running your trained model. It also calls `get_features` fucntion that you can edit.
 * `team_testing_code.m` is a script with functions for loading your model, extrating features from your test data and predict outputs using the classifier.
 
 Please do **not** edit the following scripts. We will use the unedited versions of these scripts.
