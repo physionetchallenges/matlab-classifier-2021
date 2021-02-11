@@ -14,12 +14,12 @@ function features = get_features(data, header_data,leads_idx) %get_ECGLeads_feat
 % Author: Nadi Sadr, PhD, <nadi.sadr@dbmi.emory.edu>
 % Version 1.0
 % Date 25-Nov-2020
-% Version 2.1
-% Date 25-Jan-2021
+% Version 2.1, 25-Jan-2021
+% Version 2.2, 11-Feb-2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % read number of leads, sample frequency and gain from the header.
-[recording,Total_time,num_leads,Fs,gain,age,sex,Baseline] = extract_data_from_header(header_data);
+[recording,Total_time,num_leads,Fs,adc_gain,age,sex,Baseline] = extract_data_from_header(header_data);
 num_leads = length(leads_idx);
 jj=1;
 try
@@ -27,7 +27,7 @@ try
     % Preprocessing: gain and repeat signal patterns
     for i = [leads_idx{:}]
         % Apply gain and remove baseline
-        LeadswGain(i,:)   = (data(i,:)-Baseline(i))* gain(i);
+        LeadswGain(i,:)   = (data(i,:)-Baseline(i))./adc_gain(i);
         % Extract root square mean (RSM) feature
         RSM(i) = sqrt(sum(LeadswGain(i,:).^2))./length(LeadswGain(i,:));       
         features(jj) = RSM(i);
