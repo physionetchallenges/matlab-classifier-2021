@@ -1,4 +1,4 @@
-function [recording,Total_time,num_leads,Fs,gain,age_data,sex_data,Baseline]=extract_data_from_header(header_data);
+function [recording,Total_time,num_leads,Fs,adc_gain,age_data,sex_data,Baseline]=extract_data_from_header(header_data);
 
 % Extract header information:
  
@@ -7,14 +7,14 @@ recording = tmp_hea{1};             % recording ID
 num_leads = str2num(tmp_hea{2});    % number of leads
 Fs = str2num(tmp_hea{3});           % sampling frequency  
 Total_time = str2num(tmp_hea{4})/Fs;% total time (seconds) of the ECG
-gain = zeros(1,num_leads);          % initialize gains of the ECG leads 
+adc_gain = zeros(1,num_leads);      % initialize adc_gains or floating digits of the ECG leads 
 Baseline = zeros(1,num_leads);      % initialize reported baseline of ECG leads
 
 for ii=1:num_leads
     tmp_hea = strsplit(header_data{ii+1},' ');
     tmp_gain=strsplit(tmp_hea{3},'/');
-    gain(ii)=str2num(tmp_gain{1});   % gains of the ECG leads
-    Baseline(ii)=str2num(tmp_hea{5});% reported baseline of ECG leads
+    adc_gain(ii)=str2num(tmp_gain{1});   % (ADC units) a floating-point number of the ECG leads
+    Baseline(ii)=str2num(tmp_hea{5});    % reported baseline of ECG leads
 end
 
 % Extract demographic information
