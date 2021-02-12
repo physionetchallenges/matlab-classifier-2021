@@ -18,7 +18,7 @@ function features = get_features(data, header_data,leads_idx) %get_ECGLeads_feat
 % Version 2.2, 11-Feb-2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% read number of leads, sample frequency and gain from the header.
+% read number of leads, sample frequency and adc_gain from the header.
 [recording,Total_time,num_leads,Fs,adc_gain,age,sex,Baseline] = extract_data_from_header(header_data);
 num_leads = length(leads_idx);
 jj=1;
@@ -26,7 +26,7 @@ try
     % ECG processing
     % Preprocessing: gain and repeat signal patterns
     for i = [leads_idx{:}]
-        % Apply gain and remove baseline
+        % Apply adc_gain and remove baseline
         LeadswGain(i,:)   = (data(i,:)-Baseline(i))./adc_gain(i);
         % Extract root square mean (RSM) feature
         RSM(i) = sqrt(sum(LeadswGain(i,:).^2))./length(LeadswGain(i,:));       
