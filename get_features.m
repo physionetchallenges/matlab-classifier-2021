@@ -24,7 +24,7 @@ num_leads = length(leads_idx);
 jj=1;
 try
     % ECG processing
-    % Preprocessing: gain and repeat signal patterns
+    % Preprocessing
     for i = [leads_idx{:}]
         % Apply adc_gain and remove baseline
         LeadswGain(i,:)   = (data(i,:)-Baseline(i))./adc_gain(i);
