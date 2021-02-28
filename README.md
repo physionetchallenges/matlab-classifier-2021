@@ -51,7 +51,7 @@ To load and run your trained model, please edit the `team_testing_code.m`, which
 
 ## How to extract reduced leads sets from training data?
 
-In the [Python example code](https://github.com/physionetchallenges/python-classifier-2021), we included a script, `extract_leads_wfdb.py`, for extracting reduced-lead sets from the training data. You can use our python script to produce reduce leads data and use them to test your code. 
+In the [Python example code](https://github.com/physionetchallenges/python-classifier-2021), we included a script, `extract_leads_wfdb.py`, for extracting reduced-lead sets from the training data. You can use this script to test your code locally.
 
 ## How do I learn more?
 
