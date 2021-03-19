@@ -49,18 +49,6 @@ for i = 1:num_files
     file_tmp = strsplit(input_files{i},'.');
     tmp_input_file = fullfile(input_directory, file_tmp{1});
     [data,header_data] = load_challenge_data(tmp_input_file);
-%     [data,hea_data] = load_challenge_data(tmp_input_file);
-%     Total_data{i}=data;
-%     Total_header{i}=hea_data;
-% 
-% end
-% 
-% for i = 1:num_files
-
-%     disp(['    ', num2str(i), '/', num2str(num_files), '...']);
-
-%     data = Total_data{i};
-%     header_data = Total_header{i};
     %% Check the number of available ECG leads
     tmp_hea = strsplit(header_data{1},' ');
     num_leads = str2num(tmp_hea{2});
