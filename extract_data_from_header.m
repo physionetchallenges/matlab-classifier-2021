@@ -29,10 +29,10 @@ for tline = 1:length(header_data)
     elseif startsWith(header_data{tline},'#Sex')
         tmp = strsplit(header_data{tline},': ');
         if strcmp(tmp{2},'female') || strcmp(tmp{2},'f')...
-                || strcmp(tmp{2},'F') || strcmp(tmp{2},'Female')
+                || strcmp(tmp{2},'F') || strcmp(tmp{2},'Female') || strcmp(tmp{2},'FEMALE')
             sex_data = 0;
         elseif strcmp(tmp{2},'male') || strcmp(tmp{2},'m')...
-                || strcmp(tmp{2},'M') ||strcmp(tmp{2},'Male')
+                || strcmp(tmp{2},'M') ||strcmp(tmp{2},'Male') || strcmp(tmp{2},'MALE')
             sex_data = 1;
         else
             sex_data = nan;

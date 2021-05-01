@@ -1,14 +1,14 @@
 function  model = team_training_code(input_directory,output_directory) % train_ECG_leads_classifier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Purpose: Train ECG leads and obtain classifier models
-% for 12-lead, 6-leads, 3-leads and 2-leads ECG sets
+% for 12-lead, 6-lead, 3-lead, 4-lead and 2-lead ECG sets
 % Inputs:
 % 1. input_directory
 % 2. output_directory
 %
 % Outputs:
 % model: trained model
-% 4 logistic regression models for 4 different sets of leads
+% Logistic regression models for different sets of leads
 %
 % Author: Erick Andres Perez Alday, PhD, <perezald@ohsu.edu>
 % Version 1.0 Aug-2020
@@ -16,7 +16,15 @@ function  model = team_training_code(input_directory,output_directory) % train_E
 % By: Nadi Sadr, PhD, <nadi.sadr@dbmi.emory.edu>
 % Version 2.0 1-Dec-2020
 % Version 2.2 25-Jan-2021
+% Version 2.3 26-April-2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define lead sets (e.g 12, 6, 4, 3 and 2 lead ECG sets)
+twelve_leads = [{'I'}, {'II'}, {'III'}, {'aVR'}, {'aVL'}, {'aVF'}, {'V1'}, {'V2'}, {'V3'}, {'V4'}, {'V5'}, {'V6'}];
+six_leads    = [{'I'}, {'II'}, {'III'}, {'aVR'}, {'aVL'}, {'aVF'}];
+four_leads   = [{'I'}, {'II'}, {'III'}, {'V2'}];
+three_leads  = [{'I'}, {'II'}, {'V2'}];
+two_leads    = [{'I'}, {'II'}];
+lead_sets = {twelve_leads, six_leads, four_leads, three_leads, two_leads};
 
 disp('Loading data...')
 
@@ -53,7 +61,7 @@ for i = 1:num_files
     tmp_hea = strsplit(header_data{1},' ');
     num_leads = str2num(tmp_hea{2});
     [leads, leads_idx] = get_leads(header_data,num_leads);
-
+    
     %% Extract features
     tmp_features = get_features(data,header_data,leads_idx);
     features(i,:) = tmp_features(:);
@@ -70,85 +78,28 @@ for i = 1:num_files
             break
         end
     end
-
-
+    
+    
 end
 
-%% train 4 logistic regression models for 4 different sets of leads
-
-% Train 12-lead ECG model
-disp('Training 12-lead ECG model...')
-num_leads = 12;
-[leads, leads_idx] = get_leads(header_data,num_leads);
-% Features = [1:12] features from 12 ECG leads + Age + Sex
-Features_leads_idx = [leads_idx{:},13,14];
-Features_leads = features(:,Features_leads_idx);
-model = mnrfit(Features_leads,label,'model','hierarchical');
-save_ECG12leads_model(model,output_directory,classes);
-
-% Train 6-lead ECG model
-disp('Training 6-lead ECG model...')
-num_leads = 6;
-[leads, leads_idx] = get_leads(header_data,num_leads);
-% Features = [1:6] features from 6 ECG leads + Age + Sex
-Features_leads_idx = [leads_idx{:},13,14];
-Features_leads = features(:,Features_leads_idx);
-model = mnrfit(Features_leads,label,'model','hierarchical');
-save_ECG6leads_model(model,output_directory,classes);
-
-% Train 3-lead ECG model
-disp('Training 3-lead ECG model...')
-num_leads = 3;
-[leads, leads_idx] = get_leads(header_data,num_leads);
-% Features = [1:3] features from 3 ECG leads + Age + Sex
-Features_leads_idx = [leads_idx{:},13,14];
-Features_leads = features(:,Features_leads_idx);
-model = mnrfit(Features_leads,label,'model','hierarchical');
-save_ECG3leads_model(model,output_directory,classes);
-
-% Train 2-lead ECG model
-disp('Training 2-lead ECG model...')
-num_leads = 2;
-[leads, leads_idx] = get_leads(header_data,num_leads);
-% Features = [1:2] features from 2 ECG leads + Age + Sex
-Features_leads_idx = [leads_idx{:},13,14];
-Features_leads = features(:,Features_leads_idx);
-model = mnrfit(Features_leads,label,'model','hierarchical');
-save_ECG2leads_model(model,output_directory,classes);
-
+%% train logistic regression models for the lead sets
+for i=1:length(lead_sets)
+    % Train ECG model
+    disp(['Training ',num2str(length(lead_sets{i})),'-lead ECG model...'])
+    num_leads = length(lead_sets{i});
+    [leads, leads_idx] = get_leads(header_data,num_leads);
+    % Features = [1:12] features from 12 ECG leads + Age + Sex
+    Features_leads_idx = [leads_idx{:},13,14];
+    Features_leads = features(:,Features_leads_idx);
+    model = mnrfit(Features_leads,label,'model','hierarchical');
+    save_ECGleads_model(model,output_directory,classes,num_leads);
+end
 end
 
-function save_ECG12leads_model(model,output_directory,classes) %save_ECG_model
+function save_ECGleads_model(model,output_directory,classes,num_leads) %save_ECG_model
 % Save results.
-tmp_file = 'twelve_lead_ecg_model.mat';
-filename=fullfile(output_directory,tmp_file);
-save(filename,'model','classes','-v7.3');
-
-disp('Done.')
-end
-
-function save_ECG6leads_model(model,output_directory,classes) %save_ECG_model
-% Save results.
-tmp_file = 'six_lead_ecg_model.mat';
-filename=fullfile(output_directory,tmp_file);
-save(filename,'model','classes','-v7.3');
-
-disp('Done.')
-end
-
-function save_ECG3leads_model(model,output_directory,classes) %save_ECG_model
-% Save results.
-tmp_file = 'three_lead_ecg_model.mat';
-filename=fullfile(output_directory,tmp_file);
-save(filename,'model','classes','-v7.3');
-
-disp('Done.')
-end
-
-function save_ECG2leads_model(model,output_directory,classes) %save_ECG_model
-% Save results.
-tmp_file = 'two_lead_ecg_model.mat';
-filename=fullfile(output_directory,tmp_file);
+tmp_file = [num2str(num_leads),'_lead_ecg_model.mat'];
+filename = fullfile(output_directory,tmp_file);
 save(filename,'model','classes','-v7.3');
 
 disp('Done.')
@@ -173,7 +124,7 @@ for i = 1:num_files
     fid=fopen(input_file);
     tline = fgetl(fid);
     tlines = cell(0,1);
-
+    
     while ischar(tline)
         tlines{end+1,1} = tline;
         tline = fgetl(fid);
@@ -190,9 +141,9 @@ for i = 1:num_files
             break
         end
     end
-
+    
     fclose(fid);
-
+    
 end
 classes=sort(classes);
 end
