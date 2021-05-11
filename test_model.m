@@ -43,7 +43,7 @@ model=cell(1,length(lead_sets));
 % Iterate over files.
 disp('Predicting ECG leads labels...')
 num_files = length(input_files);
-parfor i = 1:num_files
+for i = 1:num_files
 
     disp(['    ', num2str(i), '/', num2str(num_files), '...'])
     
