@@ -1,4 +1,4 @@
-function [leads, leads_idx]= get_leads(header_data, num_leads)
+function [sorted_leads, sorted_leads_idx]= get_leads(header_data, num_leads)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Purpose:
@@ -45,6 +45,10 @@ if num_leads==12
         leads{ii} = tmp_hea{9};
         leads_idx{ii} = ii;
     end
+    %Sorting the leads names as defined above on lead_sets
+    [~, sorted_leads_idx] = ismember(twelve_leads,leads);
+    sorted_leads = leads(sorted_leads_idx);
+
     % Extract 6 leads
 elseif num_leads==6
     for ii=1:Max_leads
@@ -80,7 +84,10 @@ elseif num_leads==6
             break
         end
     end
-    
+    %Sorting the leads names as defined above on lead_sets
+    [~, sorted_leads_idx] = ismember(six_leads,leads);
+    sorted_leads = leads(sorted_leads_idx);
+
     % Extract 4 leads
 elseif num_leads==4
     for ii=1:Max_leads
@@ -108,7 +115,10 @@ elseif num_leads==4
             break
         end
     end
-    
+    %Sorting the leads names as defined above on lead_sets
+    [~, sorted_leads_idx] = ismember(four_leads,leads);
+    sorted_leads = leads(sorted_leads_idx);
+
     % Extract 3 leads
 elseif num_leads==3
     for ii=1:Max_leads
@@ -132,7 +142,10 @@ elseif num_leads==3
             break
         end
     end
-    
+    %Sorting the leads names as defined above on lead_sets
+    [~, sorted_leads_idx] = ismember(three_leads,leads);
+    sorted_leads = leads(sorted_leads_idx);
+
     % Extract 2 leads
 elseif num_leads==2
     for ii=1:Max_leads
@@ -152,8 +165,10 @@ elseif num_leads==2
             break
         end
     end
-    
-end
+    %Sorting the leads names as defined above on lead_sets
+    [~, sorted_leads_idx] = ismember(two_leads,leads);
+    sorted_leads = leads(sorted_leads_idx);
 
 end
 
+end
