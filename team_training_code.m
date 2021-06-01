@@ -89,7 +89,7 @@ for i=1:length(lead_sets)
     num_leads = length(lead_sets{i});
     [leads, leads_idx] = get_leads(header_data,num_leads);
     % Features = [1:12] features from 12 ECG leads + Age + Sex
-    Features_leads_idx = [leads_idx{:},13,14];
+    Features_leads_idx = [leads_idx,13,14];
     Features_leads = features(:,Features_leads_idx);
     model = mnrfit(Features_leads,label,'model','hierarchical');
     save_ECGleads_model(model,output_directory,classes,num_leads);
