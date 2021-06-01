@@ -25,7 +25,7 @@ jj=1;
 try
     % ECG processing
     % Preprocessing
-    for i = [leads_idx{:}]
+    for i = [leads_idx]
         % Apply adc_gain and remove baseline
         LeadswGain(i,:)   = (data(i,:)-Baseline(i))./adc_gain(i);
         % Extract root square mean (RSM) feature
